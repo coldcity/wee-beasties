@@ -36,10 +36,12 @@ class NN {
         console.assert(weights.length >= this.hiddenLayer.length * this.inputLayer.length + this.outputLayer.length * this.hiddenLayer.length, "NN.Load: weights too short");
         var i = 0;  // Index into genome
 
+        // Load input->hidden layer weights
         for (var j = 0; j < this.hiddenLayer.length; j++)
             for (var k = 0; k < this.hiddenLayer[j].weights.length; k++)
                 this.hiddenLayer[j].weights[k] = weights[i++];
 
+        // Load hidden->output layer weights
         for (var j = 0; j < this.outputLayer.length; j++)
             for (var k = 0; k < this.outputLayer[j].weights.length; k++)
                 this.outputLayer[j].weights[k] = weights[i++];
@@ -47,10 +49,12 @@ class NN {
 
     // Evaluate the network for given inputs, and return outputs
     Evaluate(inputs) {
+        // Set input layer
         console.assert(inputs.length == this.inputLayer.length, "NN.SetInputs: wrong number of inputs");
         for (var i = 0; i < this.inputLayer.length; i++)
             this.inputLayer[i] = inputs[i];
 
+        // Calculate hidden layer outputs
         for (var i = 0; i < this.hiddenLayer.length; i++) {
             var sum = 0;
             for (var j = 0; j < this.hiddenLayer[i].weights.length; j++)
@@ -58,18 +62,18 @@ class NN {
 
             this.hiddenLayer[i].output = NN.sigmoid(sum);
         }
-
+        
+        // Calculate output layer outputs
+        var outputs = new Float32Array(this.outputLayer.length);
         for (var i = 0; i < this.outputLayer.length; i++) {
             var sum = 0;
             for (var j = 0; j < this.outputLayer[i].weights.length; j++)
                 sum += this.outputLayer[i].weights[j] * this.hiddenLayer[j].output;
 
-            this.outputLayer[i].output = NN.sigmoid(sum);
+            //this.outputLayer[i].output = NN.sigmoid(sum);
+            outputs[i] = NN.sigmoid(sum);
         }
 
-        var outputs = new Float32Array(this.outputLayer.length);
-        for (var i = 0; i < this.outputLayer.length; i++)
-            outputs[i] = this.outputLayer[i].output;
         return outputs;        
     }
 
