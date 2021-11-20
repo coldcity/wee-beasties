@@ -10,10 +10,10 @@ body {
     top: 0;
 }
 
-#debug, #debug2, #controls {
+#debug, #controls {
     position: absolute;
     font-size: small;
-    background-color:rgba(0,0,0,.8);
+    background-color:rgba(0,0,0,.5);
     color: white;
     padding: 4px;
 }
@@ -21,30 +21,10 @@ body {
 #debug {
     bottom: 0px;
     left: 0px;
-    width: 200px;
-}
-
-#debug2 {
-    top: 0px;
-    right: 0px;
-    overflow-y: scroll;
-    width: 225px;
-    height: 100%;
-}
-
-#debug2 td {
-    padding: 0 8px;
-}
-
-.genome {
-    width: 170px;
-    overflow-x: scroll;
-    font-size: x-small;
 }
 
 #controls {
     bottom: 0px;
-    right: 225px;
-    width: 225px;
-    vertical-align: bottom;
+    right: 0px;
+    padding-right: 16px;
 }

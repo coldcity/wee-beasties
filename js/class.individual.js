@@ -1,4 +1,4 @@
-// Wee Beasties (Linear GP playground)
+// Wee Beasties (NN playground)
 // Fell, 2021
 
 // A 2d coord
@@ -12,10 +12,11 @@ class Coord {
 // An individual in the population: Has a location, a genome, and a brain
 class Individual {
     loc;        // Worldspace coord
-    genome;     // GENOME_LENGTH_BYTES of Genetic code
-    vm;         // Our wee brain
+    genome;     // GENOME_LENGTH of Genetic code
+    brain;      // Our wee brain
     fitness;    // Our fitness
-    
+    lifespan;   // How long we've been alive
+
     cellsW;     // World size (W)
     cellsH;     // World size (H)
 
@@ -25,31 +26,45 @@ class Individual {
         this.cellsH = cellsH;
         this.loc = new Coord(Math.random() * this.cellsW, Math.random() * this.cellsH);     // Set a random world location
         this.genome = genome;
-        this.vm = new VM();
-        this.vm.Load(this.genome.ToString());   // Load the hex genome into the VM (it's machine code!)
+        this.brain = new NN(NN_INPUTS, NN_HIDDEN, NN_OUTPUTS);
+        this.brain.Load(this.genome.code);   // Load the hex genome into the VM (it's machine code!)
         this.fitness = 0;
+        this.lifespan = 0;
+    }
+
+    // Calculate fitness
+    CalculateFitness() {
+        var a = this.cellsW / 2 - this.loc.x;
+        var b = this.cellsH / 2 - this.loc.y;
+        var dist = Math.sqrt(a*a + b*b);
+
+        this.fitness = 1 / (dist + 1);   // Invert and normalise
+
+        if (isNaN(this.fitness))
+            this.fitness = 0;
+
+        return this.fitness;
     }
 
     // Live one timestep of life
     Tick() {
-        // Reset VM for fresh run (resets registers, pc, and other state)
-        this.vm.Reset(2, 2, VM_DATA_VEC_LEN);
-
-        // Setup VM input buffer
-        this.vm.SetInput(0, this.loc.x / this.cellsW);
-        this.vm.SetInput(1, this.loc.y / this.cellsH);
+        // Setup NN inputs
+        this.brain.SetInputs(Array(
+                                this.CalculateFitness(),
+                                this.loc.y / this.cellsH,
+                                this.loc.x / this.cellsW));//,
+                                //this.lifespan++));
 
         // Execute!
-        this.vm.Run(VM_MAX_STEPS);
+        this.brain.Evaluate();
 
         // Grab outputs
-        var xsig = this.vm.GetOutput(0);
-        var ysig = this.vm.GetOutput(1);
+        var outputs = this.brain.GetOutputs();
+        var xsig = (outputs[0] - 0.5) * SPEED_LIMIT;   // Normalise to [-SPEED_LIMIT, SPEED_LIMIT]
+        var ysig = (outputs[1] - 0.5) * SPEED_LIMIT;
 
-        // Move our location
-        if (!isNaN(xsig))
-            this.loc.x += xsig;
-        if (!isNaN(ysig))
-            this.loc.y += ysig;
+        // Move
+        this.loc.x += xsig;
+        this.loc.y += ysig;
     }
 }

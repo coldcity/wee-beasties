@@ -1,14 +1,14 @@
-// Wee Beasties (Linear GP playground)
+// Wee Beasties (NN playground)
 // Fell, 2021
 
 // A genetic sequence
 class Genome {
-    code = Array(GENOME_LENGTH_BYTES);  // Delicious genetic material
+    code = Array(GENOME_LENGTH);  // Delicious genetic material (floats)
 
     // Generate a random genome
     constructor() {
-        for (var i = 0; i < GENOME_LENGTH_BYTES; i++)
-            this.code[i] = Math.floor(Math.random() * 255);
+        for (var i = 0; i < GENOME_LENGTH; i++)
+            this.code[i] = Genome.GetRandomGene();
     }
 
     // Get a colour based on the genome
@@ -25,10 +25,10 @@ class Genome {
 
         // Breed with crossovers
         for (var j = 0; j < 1 + Math.floor(Math.random() * MAX_CROSSOVERS - 1); j++) {
-            var splitPoint = Math.floor(Math.random() * GENOME_LENGTH_BYTES);
+            var splitPoint = Math.floor(Math.random() * GENOME_LENGTH);
             for (var i = 0; i < splitPoint; i++)
                 child.code[i] = parent1.code[i];
-            for (var i = splitPoint; i < GENOME_LENGTH_BYTES; i++)
+            for (var i = splitPoint; i < GENOME_LENGTH; i++)
                 child.code[i] = parent2.code[i];
         }
 
@@ -39,17 +39,24 @@ class Genome {
         return child;
     }
 
-    // Mutate
-    Mutate() {
-        var gene = Math.floor(Math.random() * GENOME_LENGTH_BYTES);
-        this.code[gene] = Math.floor(Math.random() * 255);
+    // Get a random gene
+    static GetRandomGene() {
+        return Math.random() * GENE_RAND_SCALE - GENE_RAND_SCALE/2;
     }
 
-    // Dump as hex
+    // Mutate
+    Mutate() {
+        this.code[Math.floor(Math.random() * GENOME_LENGTH)] = Genome.GetRandomGene();
+    }
+
+    // Dump as text
     ToString() {
         var s = "";
-        for (var i = 0; i < GENOME_LENGTH_BYTES; i++)
-            s += this.code[i].toString(16).padStart(2, '0');
+        for (var i = 0; i < GENOME_LENGTH; i++) {
+            s += this.code[i];
+            if (i < GENOME_LENGTH - 1)
+                s += ", ";
+        }
         return s;
     }
 }
