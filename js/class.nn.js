@@ -2,6 +2,7 @@
 // Fell, 2021
 
 // A not-yet-recurrant neural network
+// For now it's a classic feed-forward perceptron
 
 class Neuron {
     weights;    // Float array of input weights
@@ -45,52 +46,41 @@ class NN {
         return outputs;
     }
 
-    // Set weights from a genome
-    Load(genome) {
+    // Set network weights
+    Load(weights) {
+        console.assert(weights.length >= this.hiddenLayer.length * this.inputLayer.length + this.outputLayer.length * this.hiddenLayer.length, "NN.Load: weights too short");
         var i = 0;  // Index into genome
 
         for (var j = 0; j < this.hiddenLayer.length; j++)
-            for (var k = 0; k < this.hiddenLayer[j].weights.length; k++) {
-                console.assert(i < genome.length, "NN.Load: genome out of bounds");
-                this.hiddenLayer[j].weights[k] = genome[i];
-                i++;                
-            }
+            for (var k = 0; k < this.hiddenLayer[j].weights.length; k++)
+                this.hiddenLayer[j].weights[k] = weights[i++];
 
         for (var j = 0; j < this.outputLayer.length; j++)
-            for (var k = 0; k < this.outputLayer[j].weights.length; k++) {
-                console.assert(i < genome.length, "NN.Load: genome out of bounds");
-                this.outputLayer[j].weights[k] = genome[i];
-                i++;
-            }
-
-        return i;
+            for (var k = 0; k < this.outputLayer[j].weights.length; k++)
+                this.outputLayer[j].weights[k] = weights[i++];
     }
 
     // Evaluate the network
     Evaluate() {
         for (var i = 0; i < this.hiddenLayer.length; i++) {
             var sum = 0;
-            for (var j = 0; j < this.hiddenLayer[i].weights.length; j++) {
+            for (var j = 0; j < this.hiddenLayer[i].weights.length; j++)
                 sum += this.hiddenLayer[i].weights[j] * this.inputLayer[j];
-                console.assert(!isNaN(sum), "NN.Evaluate: sum is NaN in hidden layer");
-            }
+
             this.hiddenLayer[i].output = NN.sigmoid(sum);
         }
 
         for (var i = 0; i < this.outputLayer.length; i++) {
             var sum = 0;
-            for (var j = 0; j < this.outputLayer[i].weights.length; j++) {
+            for (var j = 0; j < this.outputLayer[i].weights.length; j++)
                 sum += this.outputLayer[i].weights[j] * this.hiddenLayer[j].output;
-                console.assert(!isNaN(sum), "NN.Evaluate: sum is NaN in hidden layer");
-            }
+
             this.outputLayer[i].output = NN.sigmoid(sum);
         }
     }
 
     // Sigmoid function (yeah I had to google it.... it's from https://www.zacwitte.com/javascript-sigmoid-function)
     static sigmoid(t) {
-        var s = 1/(1+Math.pow(Math.E, -t));
-        console.assert(!isNaN(s), "NN.sigmoid: s is NaN");
-        return s;
+        return 1/(1+Math.pow(Math.E, -t));
     }
 }
