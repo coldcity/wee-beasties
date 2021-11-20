@@ -20,14 +20,17 @@ class NN {
 
     // Create neuron layers
     constructor(numInputs, numHidden, numOutputs) {
+        // Input layer is just a float array
         this.inputLayer = new Float32Array(numInputs);
-        this.hiddenLayer = Array(numHidden);
-        this.outputLayer = Array(numOutputs);
 
-        for (var i = 0; i < numHidden; i++)             // Create hidden layer neurons (inputs from input layer)
+        // Create hidden layer neurons (inputs from input layer)
+        this.hiddenLayer = Array(numHidden);
+        for (var i = 0; i < numHidden; i++)
             this.hiddenLayer[i] = new Neuron(numInputs);
 
-        for (var i = 0; i < numOutputs; i++)            // Create output layer neurons (inputs from hidden layer)
+        // Create output layer neurons (inputs from hidden layer)
+        this.outputLayer = Array(numOutputs);
+        for (var i = 0; i < numOutputs; i++)
             this.outputLayer[i] = new Neuron(numHidden);
     }
 
@@ -57,6 +60,7 @@ class NN {
         // Calculate hidden layer outputs
         for (var i = 0; i < this.hiddenLayer.length; i++) {
             var sum = 0;
+
             for (var j = 0; j < this.hiddenLayer[i].weights.length; j++)
                 sum += this.hiddenLayer[i].weights[j] * this.inputLayer[j];
 
@@ -67,6 +71,7 @@ class NN {
         var outputs = new Float32Array(this.outputLayer.length);
         for (var i = 0; i < this.outputLayer.length; i++) {
             var sum = 0;
+
             for (var j = 0; j < this.outputLayer[i].weights.length; j++)
                 sum += this.outputLayer[i].weights[j] * this.hiddenLayer[j].output;
 
@@ -74,7 +79,7 @@ class NN {
             outputs[i] = NN.sigmoid(sum);
         }
 
-        return outputs;        
+        return outputs;
     }
 
     // Sigmoid function (yeah I had to google it.... it's from https://www.zacwitte.com/javascript-sigmoid-function)

@@ -34,15 +34,12 @@ class Individual {
 
     // Calculate fitness
     CalculateFitness() {
+        // Get as close to screen center as we can
         var a = this.cellsW / 2 - this.loc.x;
         var b = this.cellsH / 2 - this.loc.y;
-        var dist = Math.sqrt(a*a + b*b);
+        var dist = Math.sqrt(a*a + b*b);    // Find distance
 
-        this.fitness = 1 / (dist + 1);   // Invert and normalise
-
-        if (isNaN(this.fitness))
-            this.fitness = 0;
-
+        this.fitness = 1 / (dist + 1);   // Invert (avoiding division by zero)
         return this.fitness;
     }
 
@@ -52,14 +49,11 @@ class Individual {
         var outputs = this.brain.Evaluate(Array(
                                 this.CalculateFitness(),    // Current fitness
                                 this.loc.x / this.cellsW,   // X position
-                                this.loc.y / this.cellsH   // Y position                                
+                                this.loc.y / this.cellsH    // Y position                                
                             ));
 
-        var xsig = (outputs[0] - 0.5) * SPEED_LIMIT;   // Normalise to [-SPEED_LIMIT, SPEED_LIMIT]
-        var ysig = (outputs[1] - 0.5) * SPEED_LIMIT;
-
-        // Move
-        this.loc.x += xsig;
-        this.loc.y += ysig;
+        // Move in the direction of the output signal
+        this.loc.x += (outputs[0] - 0.5) * SPEED_LIMIT;     // Normalise to [-SPEED_LIMIT, SPEED_LIMIT]
+        this.loc.y += (outputs[1] - 0.5) * SPEED_LIMIT;
     }
 }

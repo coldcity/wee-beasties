@@ -12,7 +12,6 @@ class Genome {
     }
 
     // Get a colour based on the genome
-    // @swb Is it the map-reduce?! :D
     GetColour() {
         return '#' + this.code.slice(0, 3).map(function (x) {
             return (0 + (x*1000).toString(16)).substr(-2);

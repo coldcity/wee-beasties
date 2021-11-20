@@ -73,12 +73,11 @@ class World {
         this.population.sort(function(a, b) {
             return a.fitness - b.fitness;
         });
-        var bestIndividual = this.population[this.population.length-1];
 
         // Iterate the population, breeding the next generation
         var nextPopulation = [];
         for (var i = 0; i < this.population.length; i++) {
-            // Elitism: Allow best few individuals through as they are (with a chance to mutate)
+            // Better than average? Allow it through as-is
             if (this.population[i].fitness > this.averageFitness) {
                 var g = this.population[i].genome;
                 if (Math.random() < MUTATION_RATE)
@@ -87,19 +86,16 @@ class World {
             } else {
                 // Below average fitness; replace with a child of two parents quadratic-randomly selected for fitness
                 var p1 = this.population[Math.floor(Math.pow(Math.random(), 2) * this.population.length)],
-                    p2 = this.population[Math.floor(Math.pow(Math.random(), 2) * this.population.length)],
-                    g = Genome.Breed(p1.genome, p2.genome);    // Breed the genome
+                    p2 = this.population[Math.floor(Math.pow(Math.random(), 2) * this.population.length)];
 
-                if (Math.random() < MUTATION_RATE)             // Chance to mutate
-                    g.Mutate();
+                var g = Genome.Breed(p1.genome, p2.genome);    // Breed the genome (with a chance to mutate)
                     
                 nextPopulation.push(new Individual(g, this.cellsW, this.cellsH));
             }
         }
         this.population = nextPopulation;   // The kids kill the parents ;)
 
-        this.generation++;
-        return bestIndividual;
+        this.generation++;  // Increment generation
     }
 
     // Render current world
@@ -120,7 +116,7 @@ class World {
 
             this.ctx.fillStyle = ind.genome.GetColour();    // Set colour based on genome
 
-            if (GRID_MODE)                                  // Draw the individual (with a border gap)
+            if (WORLD_IS_INT)                               // Draw the individual (with a border gap)
                 this.ctx.fillRect(x, y, CELL_SIZE_PIXELS - 1, CELL_SIZE_PIXELS - 1);
             else                                            // Draw the individual (no border gap)
                 this.ctx.fillRect(x, y, CELL_SIZE_PIXELS, CELL_SIZE_PIXELS);
