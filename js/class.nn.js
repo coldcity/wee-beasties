@@ -30,21 +30,6 @@ class NN {
         for (var i = 0; i < numOutputs; i++)            // Create output layer neurons (inputs from hidden layer)
             this.outputLayer[i] = new Neuron(numHidden);
     }
-    
-    // Set inputs
-    SetInputs(inputs) {
-        console.assert(inputs.length == this.inputLayer.length, "NN.SetInputs: wrong number of inputs");
-        for (var i = 0; i < this.inputLayer.length; i++)
-            this.inputLayer[i] = inputs[i];
-    }
-
-    // Get outputs
-    GetOutputs() {
-        var outputs = new Float32Array(this.outputLayer.length);
-        for (var i = 0; i < this.outputLayer.length; i++)
-            outputs[i] = this.outputLayer[i].output;
-        return outputs;
-    }
 
     // Set network weights
     Load(weights) {
@@ -60,8 +45,12 @@ class NN {
                 this.outputLayer[j].weights[k] = weights[i++];
     }
 
-    // Evaluate the network
-    Evaluate() {
+    // Evaluate the network for given inputs, and return outputs
+    Evaluate(inputs) {
+        console.assert(inputs.length == this.inputLayer.length, "NN.SetInputs: wrong number of inputs");
+        for (var i = 0; i < this.inputLayer.length; i++)
+            this.inputLayer[i] = inputs[i];
+
         for (var i = 0; i < this.hiddenLayer.length; i++) {
             var sum = 0;
             for (var j = 0; j < this.hiddenLayer[i].weights.length; j++)
@@ -77,6 +66,11 @@ class NN {
 
             this.outputLayer[i].output = NN.sigmoid(sum);
         }
+
+        var outputs = new Float32Array(this.outputLayer.length);
+        for (var i = 0; i < this.outputLayer.length; i++)
+            outputs[i] = this.outputLayer[i].output;
+        return outputs;        
     }
 
     // Sigmoid function (yeah I had to google it.... it's from https://www.zacwitte.com/javascript-sigmoid-function)

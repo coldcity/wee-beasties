@@ -48,18 +48,13 @@ class Individual {
 
     // Live one timestep of life
     Tick() {
-        // Setup NN inputs
-        this.brain.SetInputs(Array(
-                                this.CalculateFitness(),
-                                this.loc.y / this.cellsH,
-                                this.loc.x / this.cellsW));//,
-                                //this.lifespan++));
+        // Evaluate and grab outputs
+        var outputs = this.brain.Evaluate(Array(
+                                this.CalculateFitness(),    // Current fitness
+                                this.loc.x / this.cellsW,   // X position
+                                this.loc.y / this.cellsH   // Y position                                
+                            ));
 
-        // Execute!
-        this.brain.Evaluate();
-
-        // Grab outputs
-        var outputs = this.brain.GetOutputs();
         var xsig = (outputs[0] - 0.5) * SPEED_LIMIT;   // Normalise to [-SPEED_LIMIT, SPEED_LIMIT]
         var ysig = (outputs[1] - 0.5) * SPEED_LIMIT;
 
