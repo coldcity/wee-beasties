@@ -19,7 +19,7 @@ const   WORLD_WRAPS = true,         // World wraps around edges? (beasties leavi
         GENOME_LENGTH = (NN_HIDDEN * NN_INPUTS) + (NN_OUTPUTS * NN_HIDDEN);         // Length of a genetic sequence
 
 // Globals
-var world;                          // Population of individuals, and renderer
+var world;                          // World object instance (population and renderer)
 var ticksThisGen = 0;               // Number of ticks this generation
 
 // App init
@@ -51,10 +51,10 @@ function Frame() {
     if (fastMode) {                             // Fast mode: Tick the world though a whole generation, but don't render
         for (var i = ticksThisGen; i < TICKS_PER_GEN; i++)
             world.Tick();
-        world.Render();                         // Render the state at the end of the generation
+        world.Render(true);                     // Render the state at the end of the generation
     } else if (ticksThisGen < TICKS_PER_GEN) {  // Normal mode: If we haven't finished the generation, tick and render
         world.Tick();
-        world.Render();
+        world.Render(ticksThisGen == 0 ? true : !document.getElementById("trails").checked);
         requestAnimationFrame(Frame);
         ticksThisGen++;
         return;
@@ -66,6 +66,7 @@ function Frame() {
 
     // Output best beastie
     document.getElementById("bestInner").innerHTML = world.bestBeastie.genome.ToString();
+    document.getElementById("bestFitness").innerHTML = world.bestBeastie.fitness.toFixed(4);
 
     requestAnimationFrame(Frame);
 }

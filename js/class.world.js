@@ -106,14 +106,12 @@ class World {
     }
 
     // Render current world
-    Render() {
-        // Resize canvas to current window size (prevent getting squished)
-        this.canvas.width  = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-        
+    Render(clear) {
         // Clear background
-        this.ctx.fillStyle = '#060606';
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        if (clear) {
+            this.ctx.fillStyle = '#060606';
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        }
 
         // Iterate population, drawing each individual
         for (var ind of this.population) {

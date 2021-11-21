@@ -7,6 +7,10 @@ class Coord {
         this.x = x;
         this.y = y;
     }
+
+    static DistanceBetween(a, b) {
+        return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+    }
 }
 
 // An individual in the population: Has a location, a genome, and a brain
@@ -34,13 +38,8 @@ class Individual {
 
     // Calculate fitness
     CalculateFitness() {
-        // Get as close to screen center as we can
-        var a = this.cellsW / 2 - this.loc.x;
-        var b = this.cellsH / 2 - this.loc.y;
-        var dist = Math.sqrt(a*a + b*b);    // Find distance
-
-        this.fitness = dist == 0 ? 1 : 1 / dist;   // Invert and normalise to [0, 1]
-
+        var dist = Coord.DistanceBetween(new Coord(this.cellsW / 2, this.cellsH / 2), this.loc);    // Distance to screen center
+        this.fitness = 1 / (dist + 0.00001);  // Invert (preventing div by 0)
         return this.fitness;
     }
 
