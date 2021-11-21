@@ -34,7 +34,7 @@ function Frame() {
 
     // Paused? Do nothing
     if (document.getElementById("pause").checked) {
-        requestAnimationFrame(AppFrame);
+        requestAnimationFrame(Frame);
         return;
     }
 
@@ -55,7 +55,7 @@ function Frame() {
     } else if (ticksThisGen < TICKS_PER_GEN) {  // Normal mode: If we haven't finished the generation, tick and render
         world.Tick();
         world.Render();
-        requestAnimationFrame(AppFrame);
+        requestAnimationFrame(Frame);
         ticksThisGen++;
         return;
     }
@@ -67,5 +67,5 @@ function Frame() {
     // Output best beastie
     document.getElementById("bestInner").innerHTML = world.bestBeastie.genome.ToString();
 
-    requestAnimationFrame(AppFrame);
+    requestAnimationFrame(Frame);
 }
