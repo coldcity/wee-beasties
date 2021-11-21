@@ -54,8 +54,7 @@ class NN {
     Evaluate(inputs) {
         // Set input layer
         console.assert(inputs.length == this.inputLayer.length, "NN.SetInputs: wrong number of inputs");
-        for (var i = 0; i < this.inputLayer.length; i++)
-            this.inputLayer[i] = inputs[i];
+        this.inputLayer = inputs;
 
         // Calculate hidden layer outputs
         for (var i = 0; i < this.hiddenLayer.length; i++) {
@@ -64,7 +63,7 @@ class NN {
             for (var j = 0; j < this.hiddenLayer[i].weights.length; j++)
                 sum += this.hiddenLayer[i].weights[j] * this.inputLayer[j];
 
-            this.hiddenLayer[i].output = NN.sigmoid(sum);
+            this.hiddenLayer[i].output = NN.Sigmoid(sum);
         }
         
         // Calculate output layer outputs
@@ -76,14 +75,14 @@ class NN {
                 sum += this.outputLayer[i].weights[j] * this.hiddenLayer[j].output;
 
             //this.outputLayer[i].output = NN.sigmoid(sum);
-            outputs[i] = NN.sigmoid(sum);
+            outputs[i] = NN.Sigmoid(sum);
         }
 
         return outputs;
     }
 
     // Sigmoid function (yeah I had to google it.... it's from https://www.zacwitte.com/javascript-sigmoid-function)
-    static sigmoid(t) {
+    static Sigmoid(t) {
         return 1/(1+Math.pow(Math.E, -t));
     }
 }

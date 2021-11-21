@@ -54,7 +54,7 @@ class Genome {
         for (var i = 0; i < GENOME_LENGTH; i++) {
             s += this.code[i];
             if (i < GENOME_LENGTH - 1)
-                s += ", ";
+                s += ",<br>";
         }
         return s;
     }

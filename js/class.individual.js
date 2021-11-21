@@ -39,7 +39,8 @@ class Individual {
         var b = this.cellsH / 2 - this.loc.y;
         var dist = Math.sqrt(a*a + b*b);    // Find distance
 
-        this.fitness = 1 / (dist + 1);   // Invert (avoiding division by zero)
+        this.fitness = dist == 0 ? 1 : 1 / dist;   // Invert and normalise to [0, 1]
+
         return this.fitness;
     }
 
@@ -47,10 +48,10 @@ class Individual {
     Tick() {
         // Evaluate and grab outputs
         var outputs = this.brain.Evaluate(Array(
-                                this.CalculateFitness(),    // Current fitness
-                                this.loc.x / this.cellsW,   // X position
-                                this.loc.y / this.cellsH    // Y position                                
-                            ));
+            this.CalculateFitness(),    // Current fitness
+            this.loc.x / this.cellsW,   // X position
+            this.loc.y / this.cellsH    // Y position                                
+        ));
 
         // Move in the direction of the output signal
         this.loc.x += (outputs[0] - 0.5) * SPEED_LIMIT;     // Normalise to [-SPEED_LIMIT, SPEED_LIMIT]

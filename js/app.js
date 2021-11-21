@@ -31,18 +31,6 @@ function AppInit() {
 // App frame: Tick and render the world
 function AppFrame() {
     var fastMode = document.getElementById("fast").checked;
-    var debugInfo = document.getElementById("debug");
-
-    // Render the debug info
-    debugInfo.innerHTML = "<b>Average fitness</b> " + world.averageFitness.toFixed(4)
-                        + "<br><b>World size</b> " + world.cellsW + " x " + world.cellsH
-                        + "<br><b>Population</b> " + world.population.length
-                        + "<br><b>Generation</b> " + world.generation;
-    if (!fastMode)
-        debugInfo.innerHTML += ", <b>Step</b> " + ticksThisGen
-    if (world.survivors)
-        debugInfo.innerHTML += "<br><b>Survivors</b> " + world.survivors
-                            + " (" + ((world.survivors / world.population.length) * 100).toFixed(2) + "%)";
 
     // Paused? Do nothing
     if (document.getElementById("pause").checked) {
@@ -50,11 +38,20 @@ function AppFrame() {
         return;
     }
 
+    // Update stats
+    document.getElementById("averageFitness").innerHTML = world.averageFitness.toFixed(3);
+    document.getElementById("worldSize").innerHTML = world.cellsW + " x " + world.cellsH;
+    document.getElementById("population").innerHTML = world.population.length;
+    document.getElementById("survivors").innerHTML = world.survivors+ " (" + ((world.survivors / world.population.length) * 100).toFixed(2) + "%)";
+    document.getElementById("generation").innerHTML = world.generation;
+    if (!fastMode)
+        document.getElementById("generation").innerHTML += " (Step " + ticksThisGen + ")";
+
     // Tick the world and render
-    if (fastMode) {      // Fast mode: Tick the world though a whole generation, but don't render
+    if (fastMode) {         // Fast mode: Tick the world though a whole generation, but don't render
         for (var i = ticksThisGen; i < TICKS_PER_GEN; i++)
             world.Tick();
-        world.Render(); // Render the last frame
+        world.Render();     // Render the state at the end of the generation
     } else if (ticksThisGen < TICKS_PER_GEN) {          // Normal mode. If we haven't finished the generation, tick and render
         world.Tick();
         world.Render();
@@ -66,5 +63,9 @@ function AppFrame() {
     // Generation completed; start the next!
     ticksThisGen = 0;
     world.NextGeneration();       // Actual breeding etc happens here
+
+    // Output best beastie
+    document.getElementById("best").innerHTML = "<b>Best beastie brain</b><div id='bestInner'>" + world.bestBeastie.genome.ToString() + "</div>";
+
     requestAnimationFrame(AppFrame);
 }
