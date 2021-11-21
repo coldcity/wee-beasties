@@ -19,15 +19,17 @@
         <div id="controls">
             <div id="debug">
                 <table>
-                    <tr><td><b>Avg fitness</b></td><td><span id="averageFitness"></span></td></tr>
-                    <tr><td><b>World size</b></td><td><span id="worldSize"></span></td></tr>
-                    <tr><td><b>Population</b></td><td><span id="population"></span></td></tr>
-                    <tr><td><b>Survivors</b></td><td><span id="survivors"></span></td></tr>
-                    <tr><td><b>Generation</b></td><td><span id="generation"></span></td></tr>
+                    <tr><td><b>Avg fitness:</b></td><td><span id="averageFitness" class="mono"></span></td></tr>
+                    <tr><td><b>World size:</b></td><td><span id="worldSize" class="mono"></span></td></tr>
+                    <tr><td><b>Population:</b></td><td><span id="population" class="mono"></span></td></tr>
+                    <tr><td><b>Survivors:</b></td><td><span id="survivors" class="mono"></span></td></tr>
+                    <tr><td><b>Generation:</b></td><td><span id="generation" class="mono"></span></td></tr>
                 </table>
-                <b>Generation</b> <span id="generation"></span><br>
             </div>
-            <div id="best"></div>
+            <div id="best">
+                Best Beastie Brain:
+                <div id="bestInner" class="mono"><br>Available after<br>first generation...</div>
+            </div>
             <label for="fast" title="Only render the last frame of each generation"><input type="checkbox" id="fast"> Fast</label>            
             &nbsp;&nbsp;&nbsp;&nbsp;
             <label for="pause"><input type="checkbox" id="pause"> Pause</label>

@@ -12,7 +12,7 @@ const   WORLD_WRAPS = true,         // World wraps around edges? (beasties leavi
         MAX_CROSSOVERS = 4,         // Max number of cross-overs when breeding event (random between 1 and MAX_CROSSOVERS)
         TICKS_PER_GEN = 150,        // World ticks per generation
         GENE_RAND_SCALE = 16,       // Max amplitude of random gene float values
-        SPEED_LIMIT = 8,            // Max speed of the beasties
+        SPEED_LIMIT = 16,           // Max speed of the beasties
         NN_INPUTS = 3,              // Number of inputs to the neural network
         NN_HIDDEN = 4,              // Number of hidden nodes in the neural network
         NN_OUTPUTS = 2,             // Number of outputs from the neural network
@@ -23,13 +23,13 @@ var world;                          // Population of individuals, and renderer
 var ticksThisGen = 0;               // Number of ticks this generation
 
 // App init
-function AppInit() {
-    world = new World();                // Init the world (inits renderer, creates population)
-    requestAnimationFrame(AppFrame);    // Request an animation frame to kick things off
+function Init() {
+    world = new World();            // Init the world (inits renderer, creates population)
+    requestAnimationFrame(Frame);   // Request an animation frame to kick things off
 }
 
 // App frame: Tick and render the world
-function AppFrame() {
+function Frame() {
     var fastMode = document.getElementById("fast").checked;
 
     // Paused? Do nothing
@@ -39,7 +39,7 @@ function AppFrame() {
     }
 
     // Update stats
-    document.getElementById("averageFitness").innerHTML = world.averageFitness.toFixed(3);
+    document.getElementById("averageFitness").innerHTML = world.averageFitness.toFixed(4);
     document.getElementById("worldSize").innerHTML = world.cellsW + " x " + world.cellsH;
     document.getElementById("population").innerHTML = world.population.length;
     document.getElementById("survivors").innerHTML = world.survivors+ " (" + ((world.survivors / world.population.length) * 100).toFixed(2) + "%)";
@@ -48,11 +48,11 @@ function AppFrame() {
         document.getElementById("generation").innerHTML += " (Step " + ticksThisGen + ")";
 
     // Tick the world and render
-    if (fastMode) {         // Fast mode: Tick the world though a whole generation, but don't render
+    if (fastMode) {                             // Fast mode: Tick the world though a whole generation, but don't render
         for (var i = ticksThisGen; i < TICKS_PER_GEN; i++)
             world.Tick();
-        world.Render();     // Render the state at the end of the generation
-    } else if (ticksThisGen < TICKS_PER_GEN) {          // Normal mode. If we haven't finished the generation, tick and render
+        world.Render();                         // Render the state at the end of the generation
+    } else if (ticksThisGen < TICKS_PER_GEN) {  // Normal mode: If we haven't finished the generation, tick and render
         world.Tick();
         world.Render();
         requestAnimationFrame(AppFrame);
@@ -60,12 +60,12 @@ function AppFrame() {
         return;
     }
     
-    // Generation completed; start the next!
+    // Lifespan of current generation is over; breed a new population
     ticksThisGen = 0;
-    world.NextGeneration();       // Actual breeding etc happens here
+    world.NextGeneration();
 
     // Output best beastie
-    document.getElementById("best").innerHTML = "<b>Best beastie brain</b><div id='bestInner'>" + world.bestBeastie.genome.ToString() + "</div>";
+    document.getElementById("bestInner").innerHTML = world.bestBeastie.genome.ToString();
 
     requestAnimationFrame(AppFrame);
 }

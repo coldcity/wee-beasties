@@ -1,0 +1,44 @@
+body {
+    overflow: hidden;
+    background-color: #000000;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 14px;
+}
+
+.mono {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#renderCanvas {
+    z-index: -20;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+#controls {
+    position: absolute;
+    background-color:rgba(0,0,0,.5);
+    color: rgba(255,255,255,.8);
+    padding: 16px;
+    min-width: 210px;
+    bottom: 0px;
+    right: 0px;
+}
+
+#controls label {
+    display: inline;
+}
+
+#bestInner {
+    overflow-y: scroll;
+    height: 100px;
+}
+
+#debug, #best {
+    margin-bottom: 16px;
+}
+
+#debug td .mono {
+    margin-left: 8px;
+}

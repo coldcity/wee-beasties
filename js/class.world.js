@@ -82,10 +82,10 @@ class World {
         var nextPopulation = [];
         this.survivors = 0;
         for (var ind of this.population) {
-            // Individual better than average? Allow it through as-is
+            // Individual better than average? Allow it through as-is (with a chance to mutate)
             if (ind.fitness > this.averageFitness) {
                 var g = ind.genome;
-                if (Math.random() < MUTATION_RATE)  // Opportunistically mutate
+                if (Math.random() < MUTATION_RATE)
                     g.Mutate();
                 nextPopulation.push(new Individual(g, this.cellsW, this.cellsH));   // Create new individual with the same genome
                 this.survivors++;
