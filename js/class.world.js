@@ -45,8 +45,8 @@ class World {
 
             // Wrap / enforce boundaries
             if (WORLD_WRAPS) {
-                if (ind.loc.x > this.cellsW - 1) ind.loc.x = ind.loc.x - this.cellsW - 1;
-                if (ind.loc.y > this.cellsH - 1) ind.loc.y = ind.loc.y - this.cellsH - 1;
+                if (ind.loc.x > this.cellsW - 1) ind.loc.x -= this.cellsW - 1;
+                if (ind.loc.y > this.cellsH - 1) ind.loc.y -= this.cellsH - 1;
                 if (ind.loc.x < 0) ind.loc.x = this.cellsW - 1 - ind.loc.x;
                 if (ind.loc.y < 0) ind.loc.y = this.cellsH - 1 - ind.loc.y;
             } else {
@@ -108,9 +108,18 @@ class World {
     // Render current world
     Render(clear) {
         // Clear background
-        if (clear) {
-            this.ctx.fillStyle = '#060606';
-            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.fillStyle = clear ? '#060606' : 'rgba(0,0,0,0.05)';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Draw obstacles
+        this.ctx.fillStyle = 'red';
+        for (var i = 0; i < OBSTACLES.length; i++) {
+            var x = OBSTACLES[i].x * this.cellsW * CELL_SIZE_PIXELS;
+            var y = OBSTACLES[i].y * this.cellsH * CELL_SIZE_PIXELS;
+
+            this.ctx.beginPath();
+            this.ctx.arc(x, y, OBSTACLE_RADIUS, 0, 2 * Math.PI, false);
+            this.ctx.fill();
         }
 
         // Iterate population, drawing each individual
@@ -124,6 +133,17 @@ class World {
                 this.ctx.fillRect(x, y, CELL_SIZE_PIXELS - 1, CELL_SIZE_PIXELS - 1);
             else                                            // Draw the individual (no border gap)
                 this.ctx.fillRect(x, y, CELL_SIZE_PIXELS, CELL_SIZE_PIXELS);
+        }
+
+        // Draw visiting points on top to make them obvious
+        this.ctx.fillStyle = '#0f0';
+        for (var i = 0; i < VISITING_POINTS.length; i++) {
+            var x = VISITING_POINTS[i].x * this.cellsW * CELL_SIZE_PIXELS;
+            var y = VISITING_POINTS[i].y * this.cellsH * CELL_SIZE_PIXELS;
+
+            this.ctx.beginPath();
+            this.ctx.arc(x, y, 3, 0, 2 * Math.PI, false);
+            this.ctx.fill();
         }
     }
 }

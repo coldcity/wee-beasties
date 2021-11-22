@@ -4,7 +4,7 @@
 // Main app controller: Config, init and frame function.
 
 // App constants
-const   WORLD_WRAPS = true,         // World wraps around edges? (beasties leaving come in the other side)
+const   WORLD_WRAPS = true,        // World wraps around edges? (beasties leaving come in the other side)
         WORLD_IS_INT = false,       // World coords are constrained to integers? (beasties are stuck on grid)
         CELL_SIZE_PIXELS = 2,       // World cell size in pixels
         POPULATION_SIZE = 4000,     // World population size
@@ -13,10 +13,18 @@ const   WORLD_WRAPS = true,         // World wraps around edges? (beasties leavi
         TICKS_PER_GEN = 150,        // World ticks per generation
         GENE_RAND_SCALE = 16,       // Max amplitude of random gene float values
         SPEED_LIMIT = 16,           // Max speed of the beasties
-        NN_INPUTS = 3,              // Number of inputs to the neural network
-        NN_HIDDEN = 4,              // Number of hidden nodes in the neural network
+        NN_INPUTS = 4,              // Number of inputs to the neural network
+        NN_HIDDEN_LAYERS = 1,       // Number of hidden layers in the neural network
+        NN_HIDDEN_NEURONS = 5,      // Number of neurons in neural network hidden layers
         NN_OUTPUTS = 2,             // Number of outputs from the neural network
-        GENOME_LENGTH = (NN_HIDDEN * NN_INPUTS) + (NN_OUTPUTS * NN_HIDDEN);         // Length of a genetic sequence
+        GENOME_LENGTH = (NN_HIDDEN_NEURONS * NN_INPUTS)                                     // First inner layer
+                        + (NN_HIDDEN_LAYERS - 1) * NN_HIDDEN_NEURONS * NN_HIDDEN_NEURONS    // Other inner layers
+                        + (NN_OUTPUTS * NN_HIDDEN_NEURONS);                                 // Output layer
+
+VISITING_POINTS = [];
+OBSTACLES = [];
+
+const OBSTACLE_RADIUS = CELL_SIZE_PIXELS * 20;
 
 // Globals
 var world;                          // World object instance (population and renderer)
@@ -24,6 +32,13 @@ var ticksThisGen = 0;               // Number of ticks this generation
 
 // App init
 function Init() {
+    // Create points to visit and obstacles to avoid
+    for (var i = 0; i < 7; i++)
+        VISITING_POINTS.push(new Coord(Math.random(), Math.random()));
+    
+    for (var i = 0; i < 4; i++)
+        OBSTACLES.push(new Coord(Math.random(), Math.random()));
+
     world = new World();            // Init the world (inits renderer, creates population)
     requestAnimationFrame(Frame);   // Request an animation frame to kick things off
 }
