@@ -24,7 +24,6 @@ class Individual {
     cellsW;     // World size (W)
     cellsH;     // World size (H)
 
-    pointDistances;
     isBlocked;
 
     // Create from given genome and world size
@@ -37,19 +36,12 @@ class Individual {
         this.brain.Load(this.genome.code);   // Load the hex genome into the VM (it's machine code!)
         this.fitness = 0;
         this.lifespan = 0;
-        this.pointDistances = Array(VISITING_POINTS.length).fill(Infinity);
         this.isBlocked = false;
     }
 
     // Calculate fitness
     CalculateFitness() {
-        var totalDist = 0;
-        for (var i = 0; i < VISITING_POINTS.length; i++)
-            totalDist += this.pointDistances[i];
-        this.fitness = 1 / (totalDist + 0.00001);
-
-        //this.fitness = 1 / (Coord.DistanceBetween(new Coord(this.cellsW / 2, this.cellsH / 2), this.loc); + 0.00001); // Distance to screen center
-
+        this.fitness = 1 / (Coord.DistanceBetween(new Coord(this.cellsW / 2, this.cellsH / 2), this.loc) + 0.00001); // Distance to screen center
         return this.fitness;
     }
 
@@ -58,7 +50,7 @@ class Individual {
         // Evaluate and grab outputs
         var outputs = this.brain.Evaluate(Array(
             this.isBlocked ? 1 : 0,     // Blocked signal
-            this.CalculateFitness(),    // Current fitness
+            //this.CalculateFitness(),    // Current fitness
             this.loc.x / this.cellsW,   // X position
             this.loc.y / this.cellsH    // Y position
         ));
@@ -81,13 +73,6 @@ class Individual {
         if (!this.isBlocked) {
             this.loc.x += x;
             this.loc.y += y;
-        }
-
-        // Update point distances
-        for (var i = 0; i < VISITING_POINTS.length; i++) {
-            var dist = Coord.DistanceBetween(this.loc, new Coord(VISITING_POINTS[i].x * this.cellsW, VISITING_POINTS[i].y * this.cellsH));
-            if (dist < this.pointDistances[i])
-                this.pointDistances[i] = dist;
         }
     }
 

@@ -134,16 +134,5 @@ class World {
             else                                            // Draw the individual (no border gap)
                 this.ctx.fillRect(x, y, CELL_SIZE_PIXELS, CELL_SIZE_PIXELS);
         }
-
-        // Draw visiting points on top to make them obvious
-        this.ctx.fillStyle = '#0f0';
-        for (var i = 0; i < VISITING_POINTS.length; i++) {
-            var x = VISITING_POINTS[i].x * this.cellsW * CELL_SIZE_PIXELS;
-            var y = VISITING_POINTS[i].y * this.cellsH * CELL_SIZE_PIXELS;
-
-            this.ctx.beginPath();
-            this.ctx.arc(x, y, 3, 0, 2 * Math.PI, false);
-            this.ctx.fill();
-        }
     }
 }
